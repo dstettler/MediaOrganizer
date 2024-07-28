@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35027.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaOrganizer", "MediaOrganizer\MediaOrganizer.csproj", "{ADC42652-FFCF-4E03-842C-B2BD6BCC0048}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaOrganizer.Desktop", "MediaOrganizer.Desktop\MediaOrganizer.Desktop.csproj", "{555B690E-A57E-49A4-8289-5233D6184A31}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADC42652-FFCF-4E03-842C-B2BD6BCC0048}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADC42652-FFCF-4E03-842C-B2BD6BCC0048}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADC42652-FFCF-4E03-842C-B2BD6BCC0048}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADC42652-FFCF-4E03-842C-B2BD6BCC0048}.Release|Any CPU.Build.0 = Release|Any CPU
+		{555B690E-A57E-49A4-8289-5233D6184A31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{555B690E-A57E-49A4-8289-5233D6184A31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{555B690E-A57E-49A4-8289-5233D6184A31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{555B690E-A57E-49A4-8289-5233D6184A31}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F6FA4057-D7FD-4434-B5B8-8B7AF4ED7DA6}
+	EndGlobalSection
+EndGlobal
