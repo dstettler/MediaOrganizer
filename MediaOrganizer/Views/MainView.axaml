@@ -9,17 +9,18 @@
   <Design.DataContext>
     <!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:MainViewModel />
+    <!--<vm:MainViewModel />-->
   </Design.DataContext>
 
   <DockPanel>
     <Menu DockPanel.Dock="Top">
       <MenuItem Header="_File">
-        <MenuItem Header="_New Database" />
-        <MenuItem Header="_Open Database" />
+        <MenuItem Header="_New Database" Command="{Binding HandleOrganizerCreateCommand}" />
+        <MenuItem Header="_Open Database" Command="{Binding HandleDatabaseSelectCommand}" />
         <MenuItem Header="_Save Database" />
       </MenuItem>
     </Menu>
     <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Button Command="{Binding HandleButtonClick}">Click</Button>
   </DockPanel>  
 </UserControl>
