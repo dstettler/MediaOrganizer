@@ -194,6 +194,13 @@ INSERT INTO Tags (Name) VALUES ($tag)
 INSERT INTO ItemTags (TagId, Item) VALUES ((SELECT Tags.Id FROM Tags WHERE (Name = $tag)), $item)
 ";
 
+        private const string REMOVE_TAG_FROM_ITEM = @"
+DELETE FROM ItemTags WHERE ITEM=$item and TagId=(
+SELECT t.Id
+FROM Tags t
+WHERE t.Name = $tag);
+";
+
         /// <summary>
         /// SQL querty to delete a tag from the tags table.
         /// </summary>
@@ -322,36 +329,36 @@ WHERE t.Id <> 1
 
         public void AddTagToItem(string itemPath, string tag)
         {
-            lock (this)
+            ExecuteSqlNonQuery(ADD_TAG_TO_ITEM, new Dictionary<string, object?>
             {
-                ExecuteSqlNonQuery(ADD_TAG_TO_ITEM, new Dictionary<string, object?>
-                {
-                    { "$tag", tag },
-                    { "$item", itemPath }
-                });
-            }
+                { "$tag", tag },
+                { "$item", itemPath }
+            });
+        }
+
+        public void RemoveTagFromItem(string itemPath, string tag)
+        {
+            ExecuteSqlNonQuery(REMOVE_TAG_FROM_ITEM, new Dictionary<string, object?>
+            {
+                { "$tag", tag },
+                { "$item", itemPath }
+            });
         }
 
         public void AddTagToDatabase(string tag)
         {
-            lock (this)
+            ExecuteSqlNonQuery(ADD_TAG, new Dictionary<string, object?>
             {
-                ExecuteSqlNonQuery(ADD_TAG, new Dictionary<string, object?>
-                {
-                    { "$tag", tag }
-                });
-            }
+                { "$tag", tag }
+            });
         }
 
         public void RemoveTagFromDatabase(string tag) 
         {
-            lock (this)
+            ExecuteSqlNonQuery(DELETE_TAG, new Dictionary<string, object?>
             {
-                ExecuteSqlNonQuery(DELETE_TAG, new Dictionary<string, object?>
-                {
-                    { "$tag", tag }
-                });
-            }
+                { "$tag", tag }
+            });
         }
 
         public SqlDatabaseFilter GetFilterFromString(string queryString)
@@ -504,21 +511,24 @@ WHERE t.Id <> 1
 
         private void ExecuteSqlNonQuery(string query, Dictionary<string, object?>? parameters)
         {
-            using SqliteConnection connection = new SqliteConnection($"Data Source={_dbPath}");
-            connection.Open();
-
-            SqliteCommand command = connection.CreateCommand();
-            command.CommandText = query;
-
-            if (parameters is not null)
+            lock (this)
             {
-                foreach (var parameter in parameters)
-                {
-                    command.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-            }
+                using SqliteConnection connection = new SqliteConnection($"Data Source={_dbPath}");
+                connection.Open();
 
-            command.ExecuteNonQuery();
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = query;
+
+                if (parameters is not null)
+                {
+                    foreach (var parameter in parameters)
+                    {
+                        command.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                    }
+                }
+
+                command.ExecuteNonQuery();
+            }
         }
 
         #endregion

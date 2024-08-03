@@ -150,6 +150,41 @@ namespace MediaOrganizerTest
         }
 
         [Fact]
+        public void TestRemoveTagFromItem()
+        {
+            SqlDatabase.SqlDatabaseItem expected = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey1", Modified = 1, Size = 999, Type = "mp4", Name = "NameUwau" };
+            string expectedTag = "cool-item";
+
+            SqlDatabase sqlDatabase = new SqlDatabase("TestRemoveTagFromItem");
+            sqlDatabase.CreateSqliteDatabase();
+
+            sqlDatabase.AddItemToDatabase(expected);
+
+            sqlDatabase.AddTagToDatabase(expectedTag);
+
+            sqlDatabase.AddTagToItem(expected.Path, expectedTag);
+
+            var items = sqlDatabase.GetDatabaseItems
+            (
+                filterArg: new SqlDatabase.SqlDatabaseFilter
+                {
+                    Tags = new List<string> { expectedTag }
+                },
+                sortType: SqlDatabase.SqlDatabaseSortMode.Size, descending: true
+            );
+
+            SqlDatabase.SqlDatabaseItem actual = items.First();
+
+            sqlDatabase.RemoveTagFromItem(expected.Path, expectedTag);
+            List<string> actualTags = sqlDatabase.GetItemTags(expected.Path);
+
+            Assert.Equal(expected, actual);
+            Assert.Empty(actualTags);
+
+            sqlDatabase.DeleteTempDb();
+        }
+
+        [Fact]
         public void TestGetItemTags()
         {
             List<string> expected = new List<string> { "cool", "new", "tags!" };
