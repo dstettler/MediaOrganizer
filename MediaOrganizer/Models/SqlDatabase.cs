@@ -15,7 +15,7 @@ namespace MediaOrganizer.Models
         #region Enums and structs
 
         /// <summary>
-        /// Database item
+        /// Type with all fields of a database media item.
         /// </summary>
         public struct SqlDatabaseItem
         {
@@ -51,6 +51,9 @@ namespace MediaOrganizer.Models
             public string? Description { get; set; }
         }
 
+        /// <summary>
+        /// Database collection.
+        /// </summary>
         public struct SqlDatabaseCollection
         {
             public string Name { get; set; }
@@ -59,14 +62,24 @@ namespace MediaOrganizer.Models
             public int LastUpdated { get; set; }
         }
 
+        /// <summary>
+        /// Data structure that can be passed to a database get request to filter results.
+        /// </summary>
         public struct SqlDatabaseFilter
         {
+            /// <summary>
+            /// List of filepaths to filter with
+            /// </summary>
             public List<string>? Filenames { get; set; }
+
+            /// <summary>
+            /// List of tags to filter with
+            /// </summary>
             public List<string>? Tags { get; set; }
         }
 
         /// <summary>
-        /// Type with which to sort outputs
+        /// Type with which to sort outputs.
         /// </summary>
         public enum SqlDatabaseSortMode
         {
@@ -90,10 +103,13 @@ namespace MediaOrganizer.Models
 
         #region Constants
 
+        /// <summary>
+        /// Name of the database in the organizer archive.
+        /// </summary>
         public const string ORGANIZER_DATABASE_NAME = "organizer.db";
 
         /// <summary>
-        /// SQL query to create the item table
+        /// SQL query to create the item table.
         /// </summary>
         private const string CREATE_ITEMS_TABLE = @"
 CREATE TABLE MediaItems (
@@ -107,7 +123,7 @@ CREATE TABLE MediaItems (
 );";
 
         /// <summary>
-        /// SQL query to create the collection table
+        /// SQL query to create the collection table.
         /// </summary>
         private const string CREATE_COLLECTIONS_TABLE = @"
 CREATE TABLE Collections (
@@ -119,7 +135,7 @@ CREATE TABLE Collections (
 );";
 
         /// <summary>
-        /// SQL query to create the tags table
+        /// SQL query to create the tags table.
         /// </summary>
         private const string CREATE_TAGS_TABLE = @"	
 CREATE TABLE Tags (
@@ -131,7 +147,7 @@ INSERT INTO Tags (Name) VALUES ('media');
 ";
 
         /// <summary>
-        /// SQL query to create the tag:item table
+        /// SQL query to create the tag:item table.
         /// </summary>
         private const string CREATE_ITEM_TAGS_TABLE = @"
 CREATE TABLE ItemTags (
@@ -140,7 +156,7 @@ CREATE TABLE ItemTags (
 );";
 
         /// <summary>
-        /// SQL query to create the collection:item table
+        /// SQL query to create the collection:item table.
         /// </summary>
         private const string CREATE_COLLECTION_ITEMS_TABLE = @"
 CREATE TABLE CollectionItems (
@@ -149,7 +165,7 @@ CREATE TABLE CollectionItems (
 );";
 
         /// <summary>
-        /// SQL query to create the tag:collection table
+        /// SQL query to create the tag:collection table.
         /// </summary>
         private const string CREATE_COLLECTION_TAGS_TABLE = @"
 CREATE TABLE CollectionTags (
@@ -157,6 +173,9 @@ CREATE TABLE CollectionTags (
 	Collection	TEXT
 );";
 
+        /// <summary>
+        /// SQL query base to get items. Conditions are added in the GetDatabaseItems method.
+        /// </summary>
         private const string GET_ITEMS_BY_CONDITION = @"
 SELECT mitems.*
 FROM Tags t
@@ -202,7 +221,7 @@ WHERE t.Name = $tag);
 ";
 
         /// <summary>
-        /// SQL querty to delete a tag from the tags table.
+        /// SQL query to delete a tag from the tags table.
         /// </summary>
         private const string DELETE_TAG = @"
 DELETE FROM Tags WHERE Name=$tag;
@@ -211,6 +230,9 @@ FROM Tags t
 WHERE t.Name = $tag);
 ";
 
+        /// <summary>
+        /// SQL query to get the tags assigned to an item
+        /// </summary>
         private const string GET_ITEM_TAGS = @"
 SELECT DISTINCT t.Name
 FROM Tags t
@@ -219,6 +241,9 @@ JOIN MediaItems mitems ON mitems.Path = $path
 WHERE t.Id <> 1
 ";
 
+        /// <summary>
+        /// SQL query to get all the tags currently available in the database
+        /// </summary>
         private const string GET_TAGS_IN_DB = @"
 SELECT DISTINCT t.Name
 FROM Tags t
@@ -230,19 +255,16 @@ WHERE t.Id <> 1
         #region Fields
 
         /// <summary>
-        /// Path to the temporary SQLite db file
+        /// Path to the temporary SQLite db file.
         /// </summary>
         private readonly string _dbPath;
-
-        private List<string> _tags = new List<string>();
-        private List<string> _names = new List<string>();
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// Property to get the temporary database's path
+        /// Property to get the temporary database's path.
         /// </summary>
         public string TempDatabasePath
         {
@@ -264,6 +286,10 @@ WHERE t.Id <> 1
             zipArchiveEntry?.ExtractToFile(_dbPath);
         }
 
+        /// <summary>
+        /// Deletes the existing database file at TempDatabasePath and creates a
+        /// new empty one in its place.
+        /// </summary>
         public void CreateSqliteDatabase()
         {
             DeleteTempDb();
@@ -283,12 +309,15 @@ WHERE t.Id <> 1
         /// </summary>
         public void DeleteTempDb()
         {
-            // Ensure all connections have been fully closed before attempting to delete the db
-            SqliteConnection.ClearAllPools();
-
-            if (File.Exists(_dbPath))
+            lock (this)
             {
-                File.Delete(_dbPath);
+                // Ensure all connections have been fully closed before attempting to delete the db
+                SqliteConnection.ClearAllPools();
+
+                if (File.Exists(_dbPath))
+                {
+                    File.Delete(_dbPath);
+                }
             }
         }
 
@@ -298,7 +327,7 @@ WHERE t.Id <> 1
         /// <param name="item">SqlDatabaseItem to add.</param>
         public void AddItemToDatabase(SqlDatabaseItem item)
         {
-            lock (this)
+            try
             {
                 ExecuteSqlNonQuery(ADD_ITEM, new Dictionary<string, object?>
                 {
@@ -310,6 +339,10 @@ WHERE t.Id <> 1
                     { "$description", item.Description as object ?? DBNull.Value },
                 });
             }
+            catch (Exception ex)
+            {
+                ExceptionHelper(ex);
+            }
         }
 
         /// <summary>
@@ -318,49 +351,100 @@ WHERE t.Id <> 1
         /// <param name="key">SqlDatabaseItem path to delete.</param>
         public void RemoveItemFromDatabase(string key)
         {
-            lock (this)
+            try
             {
                 ExecuteSqlNonQuery(DELETE_ITEM, new Dictionary<string, object?>
                 {
                     { "$path", key },
                 });
             }
+            catch (Exception ex)
+            {
+                ExceptionHelper(ex);
+            }
         }
 
+        /// <summary>
+        /// Adds the specified tag to the specified item.
+        /// </summary>
+        /// <param name="itemPath">Path of the item</param>
+        /// <param name="tag">Tag to apply to the item</param>
         public void AddTagToItem(string itemPath, string tag)
         {
-            ExecuteSqlNonQuery(ADD_TAG_TO_ITEM, new Dictionary<string, object?>
+            try
             {
+                ExecuteSqlNonQuery(ADD_TAG_TO_ITEM, new Dictionary<string, object?>
+                {
                 { "$tag", tag },
                 { "$item", itemPath }
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                ExceptionHelper(ex);
+            }
         }
 
+        /// <summary>
+        /// Removes the selected tag from the item, if possible.
+        /// </summary>
+        /// <param name="itemPath">Item path with tag assigned</param>
+        /// <param name="tag">Tag to remove from item</param>
         public void RemoveTagFromItem(string itemPath, string tag)
         {
-            ExecuteSqlNonQuery(REMOVE_TAG_FROM_ITEM, new Dictionary<string, object?>
+            try
             {
-                { "$tag", tag },
-                { "$item", itemPath }
-            });
+                ExecuteSqlNonQuery(REMOVE_TAG_FROM_ITEM, new Dictionary<string, object?>
+                {
+                    { "$tag", tag },
+                    { "$item", itemPath }
+                });
+            }
+            catch (Exception ex)
+            {
+                ExceptionHelper(ex);
+            }
         }
 
+        /// <summary>
+        /// Adds the tag text to the database, if possible.
+        /// </summary>
+        /// <param name="tag">Tag to add</param>
         public void AddTagToDatabase(string tag)
         {
-            ExecuteSqlNonQuery(ADD_TAG, new Dictionary<string, object?>
+            try
             {
-                { "$tag", tag }
-            });
+                ExecuteSqlNonQuery(ADD_TAG, new Dictionary<string, object?>
+                {
+                    { "$tag", tag }
+                });
+            } 
+            catch (Exception ex)
+            {
+                ExceptionHelper(ex); 
+            }
         }
 
+        /// <summary>
+        /// Removes the given tag from the database, if it exists.
+        /// </summary>
+        /// <param name="tag"></param>
         public void RemoveTagFromDatabase(string tag) 
         {
-            ExecuteSqlNonQuery(DELETE_TAG, new Dictionary<string, object?>
+            try
             {
-                { "$tag", tag }
-            });
+                ExecuteSqlNonQuery(DELETE_TAG, new Dictionary<string, object?>
+                {
+                    { "$tag", tag }
+                });
+            }
+            catch (Exception ex)
+            {
+                ExceptionHelper(ex);
+            }
         }
 
+        // TODO
         public SqlDatabaseFilter GetFilterFromString(string queryString)
         {
             throw new NotImplementedException();
@@ -456,6 +540,11 @@ WHERE t.Id <> 1
             return items;
         }
 
+        /// <summary>
+        /// Gets the tags available for the given item.
+        /// </summary>
+        /// <param name="itemPath">Item path</param>
+        /// <returns></returns>
         public List<string> GetItemTags(string itemPath)
         {
             List<string> tags = new List<string>();
@@ -481,6 +570,10 @@ WHERE t.Id <> 1
             return tags;
         }
 
+        /// <summary>
+        /// Gets all tags in the database.
+        /// </summary>
+        /// <returns>List of tags currently registered in the database</returns>
         public List<string> GetTagsInDatabase()
         {
             List<string> tags = new List<string>();
@@ -509,6 +602,11 @@ WHERE t.Id <> 1
 
         #region Helper methods
 
+        /// <summary>
+        /// Executes the SQL query with assigned parameters without polling for a return value.
+        /// </summary>
+        /// <param name="query">SQL query to perform.</param>
+        /// <param name="parameters">Parameters to pass into the SQL query.</param>
         private void ExecuteSqlNonQuery(string query, Dictionary<string, object?>? parameters)
         {
             lock (this)
@@ -523,12 +621,21 @@ WHERE t.Id <> 1
                 {
                     foreach (var parameter in parameters)
                     {
-                        command.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                        command.Parameters.AddWithValue(parameter.Key, parameter.Value ?? DBNull.Value);
                     }
                 }
 
                 command.ExecuteNonQuery();
             }
+        }
+
+        /// <summary>
+        /// Helper method called when an exception occurs during database operations.
+        /// </summary>
+        /// <param name="ex">Exception to handle.</param>
+        private void ExceptionHelper(Exception ex)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
