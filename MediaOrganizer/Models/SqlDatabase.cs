@@ -321,6 +321,48 @@ WHERE t.Id <> 1
             }
         }
 
+        // TODO
+        /// <summary>
+        /// Adds collection to the database.
+        /// </summary>
+        /// <param name="item">Collection name to add.</param>
+        public void AddCollectionToDatabase(SqlDatabaseItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        // TODO
+        /// <summary>
+        /// Deletes collection from the database.
+        /// </summary>
+        /// <param name="key">Collection name to delete.</param>
+        public void RemoveCollectionFromDatabase(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        // TODO
+        /// <summary>
+        /// Adds the specified tag to the specified collection.
+        /// </summary>
+        /// <param name="collection">Collection to apply tag to</param>
+        /// <param name="tag">Tag to apply to the collection</param>
+        public void AddTagToCollection(string collection, string tag)
+        {
+            throw new NotImplementedException();
+        }
+
+        // TODO
+        /// <summary>
+        /// Removes the selected tag from the collection, if possible.
+        /// </summary>
+        /// <param name="collection">Collection with tag assigned</param>
+        /// <param name="tag">Tag to remove from collection</param>
+        public void RemoveTagFromCollection(string collection, string tag)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Adds item to the database.
         /// </summary>
@@ -445,19 +487,28 @@ WHERE t.Id <> 1
         }
 
         // TODO
-        public SqlDatabaseFilter GetFilterFromString(string queryString)
+        /// <summary>
+        /// Creates a SqlDatabaseFilter to apply to a get request from a given search string.
+        /// </summary>
+        /// <param name="searchString">Search content to create filter.</param>
+        /// <returns>SqlDatabaseFilter based on the search string.</returns>
+        public SqlDatabaseFilter GetFilterFromString(string searchString)
         {
             throw new NotImplementedException();
         }
 
         // TODO
+        /// <summary>
+        /// Get list of registered collections.
+        /// </summary>
+        /// <returns>List of all available collections.</returns>
         public List<SqlDatabaseCollection> GetDatabaseCollections()
         {
             throw new NotImplementedException();
         }
 
         /// <summary>
-        /// Get database MediaItems, with optional filtering and sorting.
+        /// Get list of database MediaItems, with optional filtering and sorting.
         /// </summary>
         /// <param name="filterArg">Filter to apply to search. Defaults to null.</param>
         /// <param name="sortType">Mode to sort the output list. Defualts to Date Modified.</param>
