@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="800"
+             x:Class="MediaOrganizer.Views.CurrentlySelectedItemControl">
+  <Grid>
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="2*"/>
+        <RowDefinition Height="3*"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="3*"/>
+        <RowDefinition Height="2*"/>
+      </Grid.RowDefinitions>
+      <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" FontSize="24" Text="Currently Selected" />
+      <Border x:Name="thumbBorder" BorderBrush="Black" BorderThickness="1" Grid.Row="1" Margin="50,5,50,5">
+        <Image x:Name="itemThumb" Grid.Row="1" Source="/Assets/unavailable.png"/>
+       </Border>
+      <Border x:Name="nameBorder" BorderBrush="Black" BorderThickness="1" Grid.Row="2" Margin="20,5,20,5">
+        <TextBlock x:Name="nameBlock" HorizontalAlignment="Center" TextWrapping="Wrap" Text="NAME" VerticalAlignment="Center" FontSize="32"/>
+      </Border>
+      <Border x:Name="descriptionBorder" BorderBrush="Black" BorderThickness="1" Grid.Row="3" Margin="20,5,20,5">
+        <TextBlock x:Name="descriptionBlock" TextWrapping="Wrap" Text="Description" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="18.667"/>
+      </Border>
+      <Border x:Name="tagsBorder" BorderBrush="Black" BorderThickness="1" Grid.Row="4" Margin="20,5,20,5">
+        <Grid x:Name="tagsGrid">
+          <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="3*"/>
+          </Grid.RowDefinitions>
+          <TextBlock x:Name="tagsLabel" TextWrapping="Wrap" Text="Tags:" FontSize="18.667" Margin="1,1,-1,-1"/>
+          <ItemsControl x:Name="tagsItemControl">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Button>Yo</Button>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+          </ItemsControl>
+        </Grid>
+      </Border>
+    </Grid>
+  </Grid>
+</UserControl>
