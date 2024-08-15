@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:MediaOrganizer.ViewModels"
              xmlns:views="clr-namespace:MediaOrganizer.Views"
+             xmlns:models="clr-namespace:MediaOrganizer.Models"
+             xmlns:converters="clr-namespace:MediaOrganizer.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="MediaOrganizer.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -12,6 +14,25 @@
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
     <!--<vm:MainViewModel />-->
   </Design.DataContext>
+
+  <UserControl.Resources>
+    <DataTemplate DataType="models:SqlDatabaseItem" x:Key="MediaItemTemplate">
+      <Border>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          
+          <TextBlock Text="{Binding Name}" Grid.Column="0" />
+          <TextBlock Text="{Binding Type}" Grid.Column="1" />
+          <TextBlock Text="{Binding Size}" Grid.Column="2" />
+        </Grid>
+      </Border>
+    </DataTemplate>
+  </UserControl.Resources>
+
 
   <DockPanel>
     <Menu DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="1">
@@ -38,15 +59,28 @@
       <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1,0,0,0" Background="{x:Null}" />
       
       <Button Grid.Column="0">Button 1</Button>
-      <Button Grid.Column="1">Button 1</Button>
+      <!--<Button Grid.Column="1">Button 1</Button>-->
+      <ItemsControl 
+        Grid.Column="1" 
+        ItemsSource="{Binding DatabaseItems}" 
+        ItemTemplate="{StaticResource MediaItemTemplate}" />
 
       <Grid Grid.Column="2">
         <Grid.RowDefinitions>
           <RowDefinition Height="1*" />
-          <RowDefinition Height="8*" />
+          <RowDefinition Height="10 *" />
         </Grid.RowDefinitions>
-        
-        <TextBox Grid.Row="0" Name="searchBar" />
+
+        <TextBox
+          Grid.Row="0"
+          Text="{Binding SearchBarText}"
+          Height="{Binding $self.FontSize}"
+          VerticalAlignment="Top"
+          Name="searchBar">
+          <TextBox.KeyBindings>
+            <KeyBinding Gesture="Enter" Command="{Binding HandleTagSearchedCommand}" />
+          </TextBox.KeyBindings>
+        </TextBox>
         <views:CurrentlySelectedItemControl Grid.Row="1" />
         
       </Grid>

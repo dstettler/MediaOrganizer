@@ -9,6 +9,7 @@ using System.Runtime;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.IO.Compression;
+using Avalonia.Dialogs;
 
 namespace MediaOrganizer.ViewModels;
 
@@ -22,7 +23,11 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private SqlDatabase? _sqlDatabase;
 
-    public string Greeting => "Welcome to Avalonia!";
+    [ObservableProperty]
+    private string _searchBarText;
+
+    [ObservableProperty]
+    private List<SqlDatabaseItem> _databaseItems;
 
     public MainViewModel(Window window)
     {
@@ -35,8 +40,13 @@ public partial class MainViewModel : ViewModelBase
         var file = await _window.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions { Title = "New Organizer" });
         if (file is not null)
         {
+            SqlDatabaseItem expected = new SqlDatabaseItem { Path = "Bababooey", Modified = 1, Size = 289, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem expected2 = new SqlDatabaseItem { Path = "Bababooey 2", Modified = 1, Size = 999, Type = "mp4", Name = "NameUwau 2" };
             SqlDatabase = new SqlDatabase(file.Name);
             SqlDatabase.CreateSqliteDatabase();
+
+            SqlDatabase.AddItemToDatabase(expected);
+            SqlDatabase.AddItemToDatabase(expected2);
 
             await using Stream stream = await file.OpenWriteAsync();
             using StreamWriter writer = new StreamWriter(stream);
@@ -68,6 +78,18 @@ public partial class MainViewModel : ViewModelBase
         SqlDatabase.SqlDatabaseFilter filter = new SqlDatabase.SqlDatabaseFilter();
         filter.Tags = new List<string>() { "owo" };
         SqlDatabase.GetDatabaseItems(filter);
+        return Task.CompletedTask;
+    }
+
+    [RelayCommand]
+    public Task HandleTagSearched()
+    {
+        if (SqlDatabase is SqlDatabase db)
+        {
+            SqlDatabase.SqlDatabaseFilter filter = db.GetFilterFromString(SearchBarText);
+            DatabaseItems = db.GetDatabaseItems(filter);
+        }
+        
         return Task.CompletedTask;
     }
 }

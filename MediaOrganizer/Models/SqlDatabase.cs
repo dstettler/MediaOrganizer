@@ -13,44 +13,6 @@ namespace MediaOrganizer.Models
     public class SqlDatabase
     {
         #region Enums and structs
-
-        /// <summary>
-        /// Type with all fields of a database media item.
-        /// </summary>
-        public struct SqlDatabaseItem
-        {
-
-            /// <summary>
-            /// Filepath of the item
-            /// </summary>
-            public required string Path { get; set; }
-
-            /// <summary>
-            /// Filetype of the item
-            /// </summary>
-            public required string Type { get; set; }
-            
-            /// <summary>
-            /// Filesize of the item
-            /// </summary>
-            public required int Size { get; set; }
-            
-            /// <summary>
-            /// Unix timecode of when the file was modified
-            /// </summary>
-            public required int Modified { get; set; }          
-            
-            /// <summary>
-            /// In-organizer name of the file
-            /// </summary>
-            public string? Name { get; set; }
-            
-            /// <summary>
-            /// In-organizer description of the file
-            /// </summary>
-            public string? Description { get; set; }
-        }
-
         /// <summary>
         /// Database collection.
         /// </summary>
@@ -494,6 +456,7 @@ WHERE t.Id <> 1
         /// <returns>SqlDatabaseFilter based on the search string.</returns>
         public SqlDatabaseFilter GetFilterFromString(string searchString)
         {
+            return new SqlDatabaseFilter { Tags = null, Filenames = new List<string>() { searchString } };
             throw new NotImplementedException();
         }
 
@@ -547,7 +510,7 @@ WHERE t.Id <> 1
                 }
 
                 conditionText = builder.ToString();
-                conditionText = "\n" + conditionText.Trim().Substring(0, conditionText.LastIndexOf("AND"));
+                conditionText = "\n" + conditionText.Trim().Substring(0, conditionText.LastIndexOf("OR"));
             }
 
             lock (this)

@@ -7,7 +7,7 @@ namespace MediaOrganizerTest
         [Fact]
         public void TestAddItem()
         {
-            SqlDatabase.SqlDatabaseItem expected = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey", Modified = 1, Size = 289, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem expected = new SqlDatabaseItem { Path = "Bababooey", Modified = 1, Size = 289, Type = "mp4", Name = "NameUwau" };
 
             SqlDatabase sqlDatabase = new SqlDatabase("TestAddItem");
             sqlDatabase.CreateSqliteDatabase();
@@ -17,7 +17,7 @@ namespace MediaOrganizerTest
 
             Assert.Single(items);
 
-            SqlDatabase.SqlDatabaseItem actual = items.First();
+            SqlDatabaseItem actual = items.First();
 
             Assert.Equal(expected, actual);
 
@@ -27,7 +27,7 @@ namespace MediaOrganizerTest
         [Fact]
         public void TestRemoveItem()
         {
-            SqlDatabase.SqlDatabaseItem addedItem = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey", Modified = 1, Size = 289, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem addedItem = new SqlDatabaseItem { Path = "Bababooey", Modified = 1, Size = 289, Type = "mp4", Name = "NameUwau" };
 
             SqlDatabase sqlDatabase = new SqlDatabase("TestRemoveItem");
             sqlDatabase.CreateSqliteDatabase();
@@ -35,7 +35,7 @@ namespace MediaOrganizerTest
             sqlDatabase.AddItemToDatabase(addedItem);
             var items = sqlDatabase.GetDatabaseItems();
 
-            SqlDatabase.SqlDatabaseItem actual = items.First();
+            SqlDatabaseItem actual = items.First();
             Assert.Equal(addedItem, actual);
 
             sqlDatabase.RemoveItemFromDatabase(addedItem.Path);
@@ -49,10 +49,10 @@ namespace MediaOrganizerTest
         [Fact]
         public void TestSortBySize()
         {
-            SqlDatabase.SqlDatabaseItem expected = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey2", Modified = 1, Size = 999, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem expected = new SqlDatabaseItem { Path = "Bababooey2", Modified = 1, Size = 999, Type = "mp4", Name = "NameUwau" };
             
-            SqlDatabase.SqlDatabaseItem smaller = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey1", Modified = 1, Size = 289, Type = "mp4", Name = "NameUwau" };
-            SqlDatabase.SqlDatabaseItem smallest = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey3", Modified = 1, Size = 102, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem smaller = new SqlDatabaseItem { Path = "Bababooey1", Modified = 1, Size = 289, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem smallest = new SqlDatabaseItem { Path = "Bababooey3", Modified = 1, Size = 102, Type = "mp4", Name = "NameUwau" };
 
             SqlDatabase sqlDatabase = new SqlDatabase("TestSortBySize");
             sqlDatabase.CreateSqliteDatabase();
@@ -63,7 +63,7 @@ namespace MediaOrganizerTest
 
             var items = sqlDatabase.GetDatabaseItems(filterArg: null, sortType: SqlDatabase.SqlDatabaseSortMode.Size, descending: true);
 
-            SqlDatabase.SqlDatabaseItem actual = items.First();
+            SqlDatabaseItem actual = items.First();
             Assert.Equal(expected, actual);
 
             sqlDatabase.DeleteTempDb();
@@ -72,10 +72,10 @@ namespace MediaOrganizerTest
         [Fact]
         public void TestSortByModified()
         {
-            SqlDatabase.SqlDatabaseItem expected = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey2", Modified = 99, Size = 999, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem expected = new SqlDatabaseItem { Path = "Bababooey2", Modified = 99, Size = 999, Type = "mp4", Name = "NameUwau" };
 
-            SqlDatabase.SqlDatabaseItem smaller = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey1", Modified = 1, Size = 289, Type = "mp4", Name = "NameUwau" };
-            SqlDatabase.SqlDatabaseItem smallest = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey3", Modified = 2, Size = 102, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem smaller = new SqlDatabaseItem { Path = "Bababooey1", Modified = 1, Size = 289, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem smallest = new SqlDatabaseItem { Path = "Bababooey3", Modified = 2, Size = 102, Type = "mp4", Name = "NameUwau" };
 
             SqlDatabase sqlDatabase = new SqlDatabase("TestSortByModified");
             sqlDatabase.CreateSqliteDatabase();
@@ -86,7 +86,7 @@ namespace MediaOrganizerTest
 
             var items = sqlDatabase.GetDatabaseItems(filterArg: null, sortType: SqlDatabase.SqlDatabaseSortMode.Modified, descending: true);
 
-            SqlDatabase.SqlDatabaseItem actual = items.First();
+            SqlDatabaseItem actual = items.First();
             Assert.Equal(expected, actual);
 
             sqlDatabase.DeleteTempDb();
@@ -95,10 +95,10 @@ namespace MediaOrganizerTest
         [Fact]
         public void TestSortByPath()
         {
-            SqlDatabase.SqlDatabaseItem expected = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey5", Modified = 99, Size = 999, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem expected = new SqlDatabaseItem { Path = "Bababooey5", Modified = 99, Size = 999, Type = "mp4", Name = "NameUwau" };
 
-            SqlDatabase.SqlDatabaseItem smaller = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey3", Modified = 1, Size = 289, Type = "mp4", Name = "NameUwau" };
-            SqlDatabase.SqlDatabaseItem smallest = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey1", Modified = 2, Size = 102, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem smaller = new SqlDatabaseItem { Path = "Bababooey3", Modified = 1, Size = 289, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem smallest = new SqlDatabaseItem { Path = "Bababooey1", Modified = 2, Size = 102, Type = "mp4", Name = "NameUwau" };
 
             SqlDatabase sqlDatabase = new SqlDatabase("TestSortByPath");
             sqlDatabase.CreateSqliteDatabase();
@@ -109,7 +109,7 @@ namespace MediaOrganizerTest
 
             var items = sqlDatabase.GetDatabaseItems(filterArg: null, sortType: SqlDatabase.SqlDatabaseSortMode.Filename, descending: true);
 
-            SqlDatabase.SqlDatabaseItem actual = items.First();
+            SqlDatabaseItem actual = items.First();
             Assert.Equal(expected, actual);
 
             sqlDatabase.DeleteTempDb();
@@ -118,9 +118,9 @@ namespace MediaOrganizerTest
         [Fact]
         public void TestAddTagToItem()
         {
-            SqlDatabase.SqlDatabaseItem expected = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey1", Modified = 1, Size = 999, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem expected = new SqlDatabaseItem { Path = "Bababooey1", Modified = 1, Size = 999, Type = "mp4", Name = "NameUwau" };
             string expectedTag = "cool-item";
-            SqlDatabase.SqlDatabaseItem untagged = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey2", Modified = 1, Size = 102, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem untagged = new SqlDatabaseItem { Path = "Bababooey2", Modified = 1, Size = 102, Type = "mp4", Name = "NameUwau" };
 
             SqlDatabase sqlDatabase = new SqlDatabase("TestAddTagToItem");
             sqlDatabase.CreateSqliteDatabase();
@@ -141,7 +141,7 @@ namespace MediaOrganizerTest
                 sortType: SqlDatabase.SqlDatabaseSortMode.Size, descending: true
             );
 
-            SqlDatabase.SqlDatabaseItem actual = items.First();
+            SqlDatabaseItem actual = items.First();
             Assert.Equal(expected, actual);
 
             Assert.Single(items);
@@ -152,7 +152,7 @@ namespace MediaOrganizerTest
         [Fact]
         public void TestRemoveTagFromItem()
         {
-            SqlDatabase.SqlDatabaseItem expected = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey1", Modified = 1, Size = 999, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem expected = new SqlDatabaseItem { Path = "Bababooey1", Modified = 1, Size = 999, Type = "mp4", Name = "NameUwau" };
             string expectedTag = "cool-item";
 
             SqlDatabase sqlDatabase = new SqlDatabase("TestRemoveTagFromItem");
@@ -173,7 +173,7 @@ namespace MediaOrganizerTest
                 sortType: SqlDatabase.SqlDatabaseSortMode.Size, descending: true
             );
 
-            SqlDatabase.SqlDatabaseItem actual = items.First();
+            SqlDatabaseItem actual = items.First();
 
             sqlDatabase.RemoveTagFromItem(expected.Path, expectedTag);
             List<string> actualTags = sqlDatabase.GetItemTags(expected.Path);
@@ -192,7 +192,7 @@ namespace MediaOrganizerTest
             SqlDatabase sqlDatabase = new SqlDatabase("TestGetItemTags");
             sqlDatabase.CreateSqliteDatabase();
             
-            SqlDatabase.SqlDatabaseItem dbItem = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey", Modified = 1, Size = 999, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem dbItem = new SqlDatabaseItem { Path = "Bababooey", Modified = 1, Size = 999, Type = "mp4", Name = "NameUwau" };
             sqlDatabase.AddItemToDatabase(dbItem);
 
             foreach (string tag in expected)
@@ -238,7 +238,7 @@ namespace MediaOrganizerTest
             SqlDatabase sqlDatabase = new SqlDatabase("TestRemoveTag");
             sqlDatabase.CreateSqliteDatabase();
 
-            SqlDatabase.SqlDatabaseItem dbItem = new SqlDatabase.SqlDatabaseItem { Path = "Bababooey", Modified = 1, Size = 999, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem dbItem = new SqlDatabaseItem { Path = "Bababooey", Modified = 1, Size = 999, Type = "mp4", Name = "NameUwau" };
             sqlDatabase.AddItemToDatabase(dbItem);
 
             foreach (string tag in total)
