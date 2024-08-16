@@ -41,5 +41,10 @@ namespace MediaOrganizer.Models
         /// In-organizer description of the file
         /// </summary>
         public string? Description { get; set; }
+
+        /// <summary>
+        /// In-organizer thumbnail link
+        /// </summary>
+        public string? Thumb { get; set; }
     }
 }

@@ -81,6 +81,7 @@ CREATE TABLE MediaItems (
 	Type		TEXT,
     Name        TEXT,
     Description TEXT,
+    Thumb       TEXT,
 	PRIMARY KEY(Path)
 );";
 
@@ -148,7 +149,7 @@ JOIN MediaItems mitems ON mitems.Path = itags.Item";
         /// SQL query to add item to the MediaItems table.
         /// </summary>
         private const string ADD_ITEM = @"
-INSERT INTO MediaItems(Path, Size, Modified, Type, Name, Description) VALUES ($path, $size, $modified, $type, $name, $description);
+INSERT INTO MediaItems(Path, Size, Modified, Type, Name, Description, Thumb) VALUES ($path, $size, $modified, $type, $name, $description, $thumb);
 INSERT INTO ItemTags(TagId,Item) VALUES (1, $path);
 ";
 
@@ -341,6 +342,7 @@ WHERE t.Id <> 1
                     { "$type", item.Type },
                     { "$name", item.Name as object ?? DBNull.Value },
                     { "$description", item.Description as object ?? DBNull.Value },
+                    { "$thumb", item.Thumb as object ?? DBNull.Value },
                 });
             }
             catch (Exception ex)
@@ -491,13 +493,17 @@ WHERE t.Id <> 1
             if (filterArg is SqlDatabaseFilter filter)
             {
                 StringBuilder builder = new StringBuilder();
-                builder.Append("WHERE ");
+                builder.Append("\nWHERE ");
 
                 if (filter.Tags is List<string> tagsList)
                 {
                     foreach (string tag in tagsList)
                     {
-                        builder.Append($"t.name = '{tag}' AND ");
+                        builder.Append($"t.name = '{tag}'");
+                        if (tag != tagsList.Last())
+                        {
+                            builder.Append(" AND ");
+                        }
                     }
                 }
 
@@ -505,12 +511,15 @@ WHERE t.Id <> 1
                 {
                     foreach (string filename in filenamesList)
                     {
-                        builder.Append($"mitems.path LIKE '{filename}' OR ");
+                        builder.Append($"mitems.path LIKE '{filename}'");
+                        if (filename != filenamesList.Last())
+                        {
+                            builder.Append(" OR ");
+                        }
                     }
                 }
 
                 conditionText = builder.ToString();
-                conditionText = "\n" + conditionText.Trim().Substring(0, conditionText.LastIndexOf("OR"));
             }
 
             lock (this)
