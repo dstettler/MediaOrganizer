@@ -40,7 +40,7 @@ public partial class MainViewModel : ViewModelBase
         var file = await _window.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions { Title = "New Organizer" });
         if (file is not null)
         {
-            SqlDatabaseItem expected = new SqlDatabaseItem { Path = "Bababooey", Modified = 1, Size = 289, Type = "mp4", Name = "NameUwau" };
+            SqlDatabaseItem expected = new SqlDatabaseItem { Path = "Bababooey", Modified = 1, Size = 289, Type = "mp4", Name = "NameUwau" , Description="Test\n\nTest2\nLong description"};
             SqlDatabaseItem expected2 = new SqlDatabaseItem { Path = "Bababooey 2", Modified = 1, Size = 999, Type = "mp4", Name = "NameUwau 2" };
             SqlDatabase = new SqlDatabase(file.Name);
             SqlDatabase.CreateSqliteDatabase();
