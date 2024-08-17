@@ -15,7 +15,9 @@
     <vm:MainViewModel />
   </Design.DataContext>
 
-  <UserControl.Resources>   
+  <UserControl.Resources>
+    <converters:DebugConverter x:Key="debug" />
+    
     <DataTemplate DataType="models:SqlDatabaseItem" x:Key="MediaItemTemplate">
       <Border BorderBrush="Black" BorderThickness="1,1,1,1">
         <Grid>
@@ -32,7 +34,18 @@
               <RowDefinition Height="4*" />
             </Grid.RowDefinitions>
             <TextBlock Text="{Binding Name}" Grid.Row="0" />
-            <TextBlock Text="{Binding Description}" Grid.Row="1" />
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding Tags}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Button Content="{Binding}" />
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+            </ItemsControl>
           </Grid>
           <StackPanel Grid.Column="2">
             <Button>Play</Button>

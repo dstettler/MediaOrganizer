@@ -39,7 +39,7 @@
         <TextBlock
           x:Name="descriptionBlock" 
           TextWrapping="Wrap"
-          Text="{Binding SelectedDatabaseItemDescription, Mode=OneWay, TargetNullValue=No item selected}"
+          Text="{Binding SelectedDatabaseItemDescription, TargetNullValue=N/A}"
           VerticalAlignment="Top"
           HorizontalAlignment="Left"
           FontSize="18.667"/>
@@ -50,11 +50,11 @@
             <RowDefinition/>
             <RowDefinition Height="3*"/>
           </Grid.RowDefinitions>
-          <TextBlock x:Name="tagsLabel" TextWrapping="Wrap" Text="Tags:" FontSize="18.667" Margin="1,1,-1,-1"/>
-          <ItemsControl x:Name="tagsItemControl" ItemsSource="{Binding SelectedDatabaseItemTags}">
+          <TextBlock Grid.Row="0" x:Name="tagsLabel" TextWrapping="Wrap" Text="Tags:" FontSize="18.667" Margin="1,1,-1,-1"/>
+          <ItemsControl Grid.Row="1" x:Name="tagsItemControl" ItemsSource="{Binding SelectedDatabaseItemTags}">
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <Button>Yo</Button>
+                <Button Content="{Binding}" />
               </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>

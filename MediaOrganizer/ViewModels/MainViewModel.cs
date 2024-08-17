@@ -70,9 +70,7 @@ public partial class MainViewModel : ViewModelBase
             SelectedDatabaseItemName = newValue?.Name;
             SelectedDatabaseItemDescription = newValue?.Description;
             SelectedDatabaseItemThumb = newValue?.Thumb;
-            // The compiler for some reason thinks this could be a possible null reference
-            // despite the check above
-            SelectedDatabaseItemTags = db.GetItemTags(newValue?.Path!);
+            SelectedDatabaseItemTags = newValue?.Tags;
         }
     }
 
@@ -89,6 +87,14 @@ public partial class MainViewModel : ViewModelBase
 
             SqlDatabase.AddItemToDatabase(expected);
             SqlDatabase.AddItemToDatabase(expected2);
+
+            SqlDatabase.AddTagToDatabase("cool");
+            SqlDatabase.AddTagToDatabase("epic");
+            SqlDatabase.AddTagToDatabase("awesome");
+
+            SqlDatabase.AddTagToItem(expected.Path, "cool");
+            SqlDatabase.AddTagToItem(expected.Path, "epic");
+            SqlDatabase.AddTagToItem(expected2.Path, "awesome");
 
             await using Stream stream = await file.OpenWriteAsync();
             using StreamWriter writer = new StreamWriter(stream);
