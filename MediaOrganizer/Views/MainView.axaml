@@ -12,10 +12,10 @@
   <Design.DataContext>
     <!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <!--<vm:MainViewModel />-->
+    <vm:MainViewModel />
   </Design.DataContext>
 
-  <UserControl.Resources>
+  <UserControl.Resources>   
     <DataTemplate DataType="models:SqlDatabaseItem" x:Key="MediaItemTemplate">
       <Border BorderBrush="Black" BorderThickness="1,1,1,1">
         <Grid>
@@ -58,7 +58,9 @@
     <Grid>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="1*" />
+        <ColumnDefinition Width="2" />
         <ColumnDefinition Width="3*" />
+        <ColumnDefinition Width="2" />
         <ColumnDefinition Width="1*" />
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
@@ -67,18 +69,27 @@
       <!--<TextBlock Grid.Column="1" Text="Yo" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
 
       <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1,0,0,0" Background="{x:Null}" />
-      <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0" Background="{x:Null}" />
       <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1,0,0,0" Background="{x:Null}" />
+      <Border Grid.Column="4" BorderBrush="Black" BorderThickness="1,0,0,0" Background="{x:Null}" />
       
       <Button Grid.Column="0">Button 1</Button>
+      <GridSplitter Grid.Column="1" Background="Black" ResizeDirection="Columns"/>
       <!--<Button Grid.Column="1">Button 1</Button>-->
       <ListBox 
-        Grid.Column="1" 
+        Grid.Column="2"
+        IsVisible="{Binding DatabaseItems, Converter={x:Static ObjectConverters.IsNotNull}, UpdateSourceTrigger=PropertyChanged}"
         ItemsSource="{Binding DatabaseItems}" 
         ItemTemplate="{StaticResource MediaItemTemplate}"
-        SelectedItem="{Binding SelectedDatabaseItem}"/>
+        SelectedItem="{Binding SelectedDatabaseItem}" />
+      
+      <TextBlock
+        Grid.Column="2"
+        IsVisible="{Binding DatabaseItems, Converter={x:Static ObjectConverters.IsNull}, UpdateSourceTrigger=PropertyChanged}"
+        Text="No items available!" />
 
-      <Grid Grid.Column="2">
+      <GridSplitter Grid.Column="3" Background="Black" ResizeDirection="Columns"/>
+      
+      <Grid Grid.Column="4">
         <Grid.RowDefinitions>
           <RowDefinition Height="1*" />
           <RowDefinition Height="10 *" />
@@ -94,11 +105,8 @@
             <KeyBinding Gesture="Enter" Command="{Binding HandleTagSearchedCommand}" />
           </TextBox.KeyBindings>
         </TextBox>
-        <views:CurrentlySelectedItemControl Grid.Row="1">
-          <views:CurrentlySelectedItemControl.SelectedItem>
-            <Binding Mode="OneTime" UpdateSourceTrigger="PropertyChanged" Path="SelectedDatabaseItem" />
-          </views:CurrentlySelectedItemControl.SelectedItem>
-        </views:CurrentlySelectedItemControl>
+        <views:CurrentlySelectedItemControl 
+          Grid.Row="1" />
       </Grid>
     </Grid>
   </DockPanel>  

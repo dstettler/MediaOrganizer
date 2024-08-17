@@ -3,8 +3,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:views="clr-namespace:MediaOrganizer.Views"
+             xmlns:vm="clr-namespace:MediaOrganizer.ViewModels"
              mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="800"
-             x:Class="MediaOrganizer.Views.CurrentlySelectedItemControl">
+             x:Class="MediaOrganizer.Views.CurrentlySelectedItemControl"
+             x:DataType="vm:MainViewModel">
+  
+  <Design.DataContext>
+    <vm:MainViewModel />
+  </Design.DataContext>
+  
   <Grid>
     <Grid>
       <Grid.RowDefinitions>
@@ -14,7 +21,7 @@
         <RowDefinition Height="3*"/>
         <RowDefinition Height="2*"/>
       </Grid.RowDefinitions>
-      <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" FontSize="24" Text="Currently Selected" />
+      <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" FontSize="24" Text="CURRENTLY SELECTED" />
       <Border x:Name="thumbBorder" BorderBrush="Black" BorderThickness="1" Grid.Row="1" Margin="50,5,50,5">
         <Image x:Name="itemThumb" Grid.Row="1" Source="/Assets/unavailable.png"/>
        </Border>
@@ -23,12 +30,19 @@
           x:Name="nameBlock"
           HorizontalAlignment="Center"
           TextWrapping="Wrap" 
-          Text="{Binding $parent[views:CurrentlySelectedItemControl].SelectedItem.Name, TargetNullValue=No item selected}"
           VerticalAlignment="Center"
-          FontSize="32"/>
+          Text="{Binding SelectedDatabaseItemName, TargetNullValue=N/A}"
+          FontSize="32">
+        </TextBlock>
       </Border>
       <Border x:Name="descriptionBorder" BorderBrush="Black" BorderThickness="1" Grid.Row="3" Margin="20,5,20,5">
-        <TextBlock x:Name="descriptionBlock" TextWrapping="Wrap" Text="Description" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="18.667"/>
+        <TextBlock
+          x:Name="descriptionBlock" 
+          TextWrapping="Wrap"
+          Text="{Binding SelectedDatabaseItemDescription, Mode=OneWay, TargetNullValue=No item selected}"
+          VerticalAlignment="Top"
+          HorizontalAlignment="Left"
+          FontSize="18.667"/>
       </Border>
       <Border x:Name="tagsBorder" BorderBrush="Black" BorderThickness="1" Grid.Row="4" Margin="20,5,20,5">
         <Grid x:Name="tagsGrid">
@@ -37,7 +51,7 @@
             <RowDefinition Height="3*"/>
           </Grid.RowDefinitions>
           <TextBlock x:Name="tagsLabel" TextWrapping="Wrap" Text="Tags:" FontSize="18.667" Margin="1,1,-1,-1"/>
-          <ItemsControl x:Name="tagsItemControl">
+          <ItemsControl x:Name="tagsItemControl" ItemsSource="{Binding SelectedDatabaseItemTags}">
             <ItemsControl.ItemTemplate>
               <DataTemplate>
                 <Button>Yo</Button>

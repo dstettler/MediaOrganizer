@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.IO.Compression;
 using Avalonia.Dialogs;
+using System.ComponentModel;
 
 namespace MediaOrganizer.ViewModels;
 
@@ -24,17 +25,55 @@ public partial class MainViewModel : ViewModelBase
     private SqlDatabase? _sqlDatabase;
 
     [ObservableProperty]
-    private string _searchBarText;
+    private string? _searchBarText;
 
     [ObservableProperty]
-    private List<SqlDatabaseItem> _databaseItems;
+    private List<SqlDatabaseItem>? _databaseItems;
 
     [ObservableProperty]
-    private SqlDatabaseItem _selectedDatabaseItem;
+    private SqlDatabaseItem? _selectedDatabaseItem;
+
+    [ObservableProperty]
+    private string? _selectedDatabaseItemName;
+
+    [ObservableProperty]
+    private string? _selectedDatabaseItemDescription;
+
+    [ObservableProperty]
+    private string? _selectedDatabaseItemThumb;
+
+    [ObservableProperty]
+    private List<string>? _selectedDatabaseItemTags;
 
     public MainViewModel(Window window)
     {
         _window = window;
+        SqlDatabase = null;
+        SearchBarText = null;
+        DatabaseItems = null;
+        SelectedDatabaseItem = null;
+    }
+
+    public MainViewModel()
+    {
+        _window = new Window();
+        SqlDatabase = null;
+        SearchBarText = null;
+        DatabaseItems = null;
+        SelectedDatabaseItem = null;
+    }
+
+    partial void OnSelectedDatabaseItemChanged(SqlDatabaseItem? oldValue, SqlDatabaseItem? newValue)
+    {
+        if (SqlDatabase is SqlDatabase db && newValue is not null)
+        {
+            SelectedDatabaseItemName = newValue?.Name;
+            SelectedDatabaseItemDescription = newValue?.Description;
+            SelectedDatabaseItemThumb = newValue?.Thumb;
+            // The compiler for some reason thinks this could be a possible null reference
+            // despite the check above
+            SelectedDatabaseItemTags = db.GetItemTags(newValue?.Path!);
+        }
     }
 
     [RelayCommand]
@@ -80,7 +119,7 @@ public partial class MainViewModel : ViewModelBase
     {
         SqlDatabase.SqlDatabaseFilter filter = new SqlDatabase.SqlDatabaseFilter();
         filter.Tags = new List<string>() { "owo" };
-        SqlDatabase.GetDatabaseItems(filter);
+        SqlDatabase?.GetDatabaseItems(filter);
         return Task.CompletedTask;
     }
 
@@ -89,8 +128,11 @@ public partial class MainViewModel : ViewModelBase
     {
         if (SqlDatabase is SqlDatabase db)
         {
-            SqlDatabase.SqlDatabaseFilter filter = db.GetFilterFromString(SearchBarText);
-            DatabaseItems = db.GetDatabaseItems(filter);
+            if (SearchBarText is not null)
+            {
+                SqlDatabase.SqlDatabaseFilter filter = db.GetFilterFromString(SearchBarText);
+                DatabaseItems = db.GetDatabaseItems(filter);
+            }
         }
         
         return Task.CompletedTask;
