@@ -75,7 +75,8 @@
       <ListBox 
         Grid.Column="1" 
         ItemsSource="{Binding DatabaseItems}" 
-        ItemTemplate="{StaticResource MediaItemTemplate}" />
+        ItemTemplate="{StaticResource MediaItemTemplate}"
+        SelectedItem="{Binding SelectedDatabaseItem}"/>
 
       <Grid Grid.Column="2">
         <Grid.RowDefinitions>
@@ -93,10 +94,12 @@
             <KeyBinding Gesture="Enter" Command="{Binding HandleTagSearchedCommand}" />
           </TextBox.KeyBindings>
         </TextBox>
-        <views:CurrentlySelectedItemControl Grid.Row="1" />
-        
+        <views:CurrentlySelectedItemControl Grid.Row="1">
+          <views:CurrentlySelectedItemControl.SelectedItem>
+            <Binding Mode="OneTime" UpdateSourceTrigger="PropertyChanged" Path="SelectedDatabaseItem" />
+          </views:CurrentlySelectedItemControl.SelectedItem>
+        </views:CurrentlySelectedItemControl>
       </Grid>
-
     </Grid>
   </DockPanel>  
 </UserControl>

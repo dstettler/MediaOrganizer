@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="clr-namespace:MediaOrganizer.Views"
              mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="800"
              x:Class="MediaOrganizer.Views.CurrentlySelectedItemControl">
   <Grid>
@@ -18,7 +19,13 @@
         <Image x:Name="itemThumb" Grid.Row="1" Source="/Assets/unavailable.png"/>
        </Border>
       <Border x:Name="nameBorder" BorderBrush="Black" BorderThickness="1" Grid.Row="2" Margin="20,5,20,5">
-        <TextBlock x:Name="nameBlock" HorizontalAlignment="Center" TextWrapping="Wrap" Text="NAME" VerticalAlignment="Center" FontSize="32"/>
+        <TextBlock 
+          x:Name="nameBlock"
+          HorizontalAlignment="Center"
+          TextWrapping="Wrap" 
+          Text="{Binding $parent[views:CurrentlySelectedItemControl].SelectedItem.Name, TargetNullValue=No item selected}"
+          VerticalAlignment="Center"
+          FontSize="32"/>
       </Border>
       <Border x:Name="descriptionBorder" BorderBrush="Black" BorderThickness="1" Grid.Row="3" Margin="20,5,20,5">
         <TextBlock x:Name="descriptionBlock" TextWrapping="Wrap" Text="Description" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="18.667"/>

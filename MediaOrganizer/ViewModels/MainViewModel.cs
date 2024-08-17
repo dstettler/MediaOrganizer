@@ -29,6 +29,9 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private List<SqlDatabaseItem> _databaseItems;
 
+    [ObservableProperty]
+    private SqlDatabaseItem _selectedDatabaseItem;
+
     public MainViewModel(Window window)
     {
         _window = window;
