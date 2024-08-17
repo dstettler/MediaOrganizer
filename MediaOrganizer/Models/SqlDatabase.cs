@@ -511,7 +511,7 @@ WHERE t.Id <> 1
                 {
                     foreach (string filename in filenamesList)
                     {
-                        builder.Append($"mitems.path LIKE '{filename}'");
+                        builder.Append($"mitems.path LIKE '%{filename}%'");
                         if (filename != filenamesList.Last())
                         {
                             builder.Append(" OR ");
