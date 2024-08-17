@@ -46,5 +46,10 @@ namespace MediaOrganizer.Models
         /// In-organizer thumbnail link
         /// </summary>
         public string? Thumb { get; set; }
+
+        /// <summary>
+        /// Tags applied to this item
+        /// </summary>
+        public List<string>? Tags { get; set; }
     }
 }

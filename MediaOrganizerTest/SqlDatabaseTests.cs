@@ -176,10 +176,10 @@ namespace MediaOrganizerTest
             SqlDatabaseItem actual = items.First();
 
             sqlDatabase.RemoveTagFromItem(expected.Path, expectedTag);
-            List<string> actualTags = sqlDatabase.GetItemTags(expected.Path);
+            List<string>? actualTags = sqlDatabase.GetItemTags(expected.Path);
 
             Assert.Equal(expected, actual);
-            Assert.Empty(actualTags);
+            Assert.Null(actualTags);
 
             sqlDatabase.DeleteTempDb();
         }
@@ -201,7 +201,9 @@ namespace MediaOrganizerTest
                 sqlDatabase.AddTagToItem(dbItem.Path, tag);
             }
 
-            List<string> actual = sqlDatabase.GetItemTags(dbItem.Path);
+            List<string>? actual = sqlDatabase.GetItemTags(dbItem.Path);
+
+            Assert.NotNull(actual);
 
             Assert.Equal(expected, actual);
 
@@ -249,8 +251,10 @@ namespace MediaOrganizerTest
 
             sqlDatabase.RemoveTagFromDatabase(badTag);
 
-            List<string> tagsOnItem = sqlDatabase.GetItemTags(dbItem.Path);
+            List<string>? tagsOnItem = sqlDatabase.GetItemTags(dbItem.Path);
             List<string> actual = sqlDatabase.GetTagsInDatabase();
+
+            Assert.NotNull(tagsOnItem);
 
             Assert.Equal(expected, actual);
             Assert.DoesNotContain(badTag, tagsOnItem);

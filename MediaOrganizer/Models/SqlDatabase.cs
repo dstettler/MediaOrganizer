@@ -140,7 +140,7 @@ CREATE TABLE CollectionTags (
         /// SQL query base to get items. Conditions are added in the GetDatabaseItems method.
         /// </summary>
         private const string GET_ITEMS_BY_CONDITION = @"
-SELECT mitems.*
+SELECT DISTINCT mitems.*
 FROM Tags t
 JOIN ItemTags itags ON itags.TagId = t.Id
 JOIN MediaItems mitems ON mitems.Path = itags.Item";
@@ -199,7 +199,7 @@ WHERE t.Name = $tag);
         private const string GET_ITEM_TAGS = @"
 SELECT DISTINCT t.Name
 FROM Tags t
-JOIN ItemTags itags ON itags.TagId = t.Id
+JOIN ItemTags itags ON itags.TagId = t.Id AND itags.Item = $path
 JOIN MediaItems mitems ON mitems.Path = $path
 WHERE t.Id <> 1
 ";
@@ -553,7 +553,8 @@ WHERE t.Id <> 1
                         Modified = reader.GetInt32(2),
                         Type = reader.GetString(3),
                         Name = name,
-                        Description = description
+                        Description = description,
+                        Tags = GetItemTags(reader.GetString(0))
                     };
 
                     items.Add(item);
@@ -568,7 +569,7 @@ WHERE t.Id <> 1
         /// </summary>
         /// <param name="itemPath">Item path</param>
         /// <returns></returns>
-        public List<string> GetItemTags(string itemPath)
+        public List<string>? GetItemTags(string itemPath)
         {
             List<string> tags = new List<string>();
 
@@ -590,7 +591,7 @@ WHERE t.Id <> 1
                 }
             }
 
-            return tags;
+            return (tags.Count > 0) ? tags : null;
         }
 
         /// <summary>
