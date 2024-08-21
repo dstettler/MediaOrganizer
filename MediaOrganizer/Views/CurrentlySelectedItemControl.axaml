@@ -39,22 +39,25 @@
         <TextBlock
           x:Name="descriptionBlock" 
           TextWrapping="Wrap"
+          Margin="5,5,5,5"
           Text="{Binding SelectedDatabaseItemDescription, TargetNullValue=N/A}"
           VerticalAlignment="Top"
           HorizontalAlignment="Left"
           FontSize="18.667"/>
       </Border>
       <Border x:Name="tagsBorder" BorderBrush="Black" BorderThickness="1" Grid.Row="4" Margin="20,5,20,5">
-        <Grid x:Name="tagsGrid">
+        <Grid x:Name="tagsGrid" Margin="5,5,5,5">
           <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="3*"/>
           </Grid.RowDefinitions>
           <TextBlock Grid.Row="0" x:Name="tagsLabel" TextWrapping="Wrap" Text="Tags:" FontSize="18.667" Margin="1,1,-1,-1"/>
-          <ItemsControl Grid.Row="1" x:Name="tagsItemControl" ItemsSource="{Binding SelectedDatabaseItemTags}">
+          <ItemsControl Margin="0,5,0,0" Grid.Row="1" x:Name="tagsItemControl" ItemsSource="{Binding SelectedDatabaseItemTags}">
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <Button Content="{Binding}" />
+                <Border Classes="TagBorder">
+                  <TextBlock Text="{Binding}" Classes="TagText" />
+                </Border>
               </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>

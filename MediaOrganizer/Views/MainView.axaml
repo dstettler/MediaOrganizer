@@ -14,13 +14,13 @@
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
     <vm:MainViewModel />
   </Design.DataContext>
-
+  
   <UserControl.Resources>
     <converters:DebugConverter x:Key="debug" />
-    
+
     <DataTemplate DataType="models:SqlDatabaseItem" x:Key="MediaItemTemplate">
       <Border BorderBrush="Black" BorderThickness="1,1,1,1">
-        <Grid>
+        <Grid MaxHeight="100">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="10*" />
@@ -37,7 +37,9 @@
             <ItemsControl Grid.Row="1" ItemsSource="{Binding Tags}">
               <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                  <Button Content="{Binding}" />
+                  <Border Classes="TagBorder">
+                    <TextBlock Text="{Binding}" Classes="TagText" />
+                  </Border>
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
               <ItemsControl.ItemsPanel>
@@ -47,12 +49,14 @@
               </ItemsControl.ItemsPanel>
             </ItemsControl>
           </Grid>
-          <StackPanel Grid.Column="2">
-            <Button>Play</Button>
-            <Button>Add to Queue</Button>
-            <Button>Remove</Button>
-            <Button>Delete</Button>
-          </StackPanel>
+          <Viewbox Stretch="Uniform" Grid.Column="2">
+            <StackPanel>
+              <Button>Play</Button>
+              <Button>Add to Queue</Button>
+              <Button>Remove</Button>
+              <Button>Delete</Button>
+            </StackPanel>
+          </Viewbox>
         </Grid>
       </Border>
     </DataTemplate>
@@ -90,6 +94,7 @@
       <!--<Button Grid.Column="1">Button 1</Button>-->
       <ListBox 
         Grid.Column="2"
+        Margin="10,10,10,10"
         IsVisible="{Binding DatabaseItems, Converter={x:Static ObjectConverters.IsNotNull}, UpdateSourceTrigger=PropertyChanged}"
         ItemsSource="{Binding DatabaseItems}" 
         ItemTemplate="{StaticResource MediaItemTemplate}"
@@ -97,6 +102,7 @@
       
       <TextBlock
         Grid.Column="2"
+        Margin="10,10,10,10"
         IsVisible="{Binding DatabaseItems, Converter={x:Static ObjectConverters.IsNull}, UpdateSourceTrigger=PropertyChanged}"
         Text="No items available!" />
 
@@ -108,16 +114,17 @@
           <RowDefinition Height="10 *" />
         </Grid.RowDefinitions>
 
-        <TextBox
-          Grid.Row="0"
-          Text="{Binding SearchBarText}"
-          Height="{Binding $self.FontSize}"
-          VerticalAlignment="Top"
-          Name="searchBar">
-          <TextBox.KeyBindings>
-            <KeyBinding Gesture="Enter" Command="{Binding HandleTagSearchedCommand}" />
-          </TextBox.KeyBindings>
-        </TextBox>
+        <StackPanel Grid.Row="0">
+          <TextBox
+            Text="{Binding SearchBarText}"
+            Height="{Binding $self.FontSize}"
+            VerticalAlignment="Top"
+            Name="searchBar">
+            <TextBox.KeyBindings>
+              <KeyBinding Gesture="Enter" Command="{Binding HandleTagSearchedCommand}" />
+            </TextBox.KeyBindings>
+          </TextBox>
+        </StackPanel>
         <views:CurrentlySelectedItemControl 
           Grid.Row="1" />
       </Grid>

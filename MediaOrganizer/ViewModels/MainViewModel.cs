@@ -96,6 +96,13 @@ public partial class MainViewModel : ViewModelBase
             SqlDatabase.AddTagToItem(expected.Path, "epic");
             SqlDatabase.AddTagToItem(expected2.Path, "awesome");
 
+            for (int i = 3; i < 20; i++)
+            {
+                SqlDatabaseItem it = new SqlDatabaseItem { Path = $"Bababooey{i.ToString()}", Modified = 1, Size = 289, Type = "mp4", Name = "NameUwau", Description = "Test\n\nTest2\nLong description" };
+                SqlDatabase.AddItemToDatabase(it);
+            }
+
+
             await using Stream stream = await file.OpenWriteAsync();
             using StreamWriter writer = new StreamWriter(stream);
             await writer.WriteLineAsync("temp");

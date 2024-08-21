@@ -1,0 +1,32 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Design.PreviewWith>
+    <Border Padding="20">
+      <!-- Add Controls for Previewer Here -->
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+      <Border Grid.Column="0" Classes="TagBorder">
+        <TextBlock Text="Yo" Classes="TagText" />
+      </Border>
+      <Border Grid.Column="1" Classes="TagBorder">
+        <TextBlock Text="Yo 2" Classes="TagText" />
+      </Border>
+        </Grid>
+    </Border>
+  </Design.PreviewWith>
+
+  <!-- Add Styles Here -->
+  <Style Selector="Border.TagBorder">
+    <Setter Property="Background" Value="BlueViolet" />
+    <Setter Property="Padding" Value="5,5,5,5" />
+    <Setter Property="Margin" Value="0,0,5,0" />
+    <Setter Property="CornerRadius" Value="10" />
+  </Style>
+  <Style Selector="TextBlock.TagText">
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+</Styles>
